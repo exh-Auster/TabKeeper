@@ -10,7 +10,7 @@ import SwiftData
 
 @Model
 class Customer {
-    var id: UUID
+    var id: UUID = UUID()
     var phoneNumber: String
     var name: String
     
@@ -18,41 +18,39 @@ class Customer {
     
     var purchases: [Purchase] = []
     
-    init(id: UUID, phoneNumber: String, name: String, purchases: [Purchase]) {
-        self.id = id
+    init(phoneNumber: String, name: String) {
         self.phoneNumber = phoneNumber
         self.name = name
-        self.purchases = purchases
     }
 }
 
 @Model
 class Purchase {
-    var id: UUID
+    var id: UUID = UUID()
     var date: Date
-    var customer: Customer
+    var customer: Customer?
     
     var items: [Item] = []
+    var isPaid: Bool = false
     
-    init(id: UUID, customer: Customer, date: Date, items: [Item]) {
-        self.id = id
-        self.customer = customer
+    init(date: Date = Date.now, customer: Customer, items: [Item] = [], isPaid: Bool = false) {
         self.date = date
+        self.customer = customer
         self.items = items
+        self.isPaid = isPaid
     }
 }
 
 @Model
 class Item {
-    var id: UUID
+    var id: UUID = UUID()
     var name: String
     var price: Decimal
     var quantity: Int
     
-    var purchase: Purchase
+    var purchase: Purchase?
     
-    init(id: UUID, name: String, price: Decimal, quantity: Int, purchase: Purchase) {
-        self.id = id
+    init(name: String, price: Decimal, quantity: Int, purchase: Purchase) {
         self.name = name
         self.price = price
         self.quantity = quantity

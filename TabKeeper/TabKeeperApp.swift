@@ -5,6 +5,7 @@
 //  Created by Felipe Ribeiro on 27/04/25.
 //
 
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,5 +14,6 @@ struct TabKeeperApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [Customer.self, Purchase.self, Item.self])
     }
 }

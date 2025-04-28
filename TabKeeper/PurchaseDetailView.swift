@@ -12,11 +12,7 @@ struct PurchaseDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Bindable var purchase: Purchase
     
-    var grandTotal: Decimal {
-        purchase.items.reduce(Decimal(0)) { partialResult, item in
-            partialResult + item.price
-        }
-    }
+    @State var newItemName = ""
     
     var body: some View {
         List {
@@ -31,8 +27,14 @@ struct PurchaseDetailView: View {
             }
             
             Section {
-                Button("Adicionar item") {
-                    #warning("Not implemented")
+                HStack {
+                    TextField("Novo item", text: $newItemName, axis: .vertical)
+                    Button {
+                        #warning("Not implemented")
+                        newItemName = ""
+                    } label: {
+                        Image(systemName: "plus")
+                    }
                 }
             }
             

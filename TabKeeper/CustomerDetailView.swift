@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct CustomerDetailView: View {
+    @Environment(\.modelContext) var modelContext
     @Bindable var customer: Customer
     
     var body: some View {
@@ -30,9 +31,7 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
-                .onDelete { _ in
-                    #warning("Not implemented")
-                }
+                .onDelete(perform: deletePurchase)
             }
         }
         .navigationTitle(customer.name)
@@ -42,6 +41,13 @@ struct CustomerDetailView: View {
                 #warning("Not implemented")
             }
             .disabled(true)
+        }
+    }
+    
+    func deletePurchase(_ indexSet: IndexSet) {
+        for index in indexSet {
+            let purchase = customer.purchases[index]
+            modelContext.delete(purchase)
         }
     }
 }

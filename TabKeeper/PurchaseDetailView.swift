@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct PurchaseDetailView: View {
+    @Environment(\.modelContext) var modelContext
     @Bindable var purchase: Purchase
     
     var grandTotal: Decimal {
@@ -62,9 +63,7 @@ struct PurchaseDetailView: View {
                     }
                 }
             }
-            .onDelete { _ in
-                #warning("Not implemented")
-            }
+            .onDelete(perform: deleteItem)
         }
         .navigationTitle(Text(purchase.date, format: .dateTime.day().month().year()))
         .navigationBarTitleDisplayMode(.inline)
@@ -72,6 +71,15 @@ struct PurchaseDetailView: View {
             Button("Compartilhar", systemImage: "square.and.arrow.up") {
                 #warning("Not implemented")
             }
+        }
+    }
+    
+    func deleteItem(_ indexSet: IndexSet) {
+        for index in indexSet {
+            let item = purchase.items[index]
+            #warning("Confirm approach")
+            purchase.items.remove(at: index)
+            modelContext.delete(item)
         }
     }
 }

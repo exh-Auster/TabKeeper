@@ -21,7 +21,7 @@ struct PurchaseDetailView: View {
         List {
             Section("Total") {
                 HStack {
-                    Text("\(purchase.items.count) itens") // FIXME: count * quantity
+                    Text("\(purchase.items.reduce(0) { $0 + $1.quantity }) itens") // FIXME: item count not updating on delete
                     
                     Spacer()
                     

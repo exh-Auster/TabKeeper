@@ -21,13 +21,16 @@ struct CustomerDetailView: View {
                     } label: {
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(purchase.date, format: .dateTime)
-                                Text("PLACEHOLDER") // TODO: value
+                                Text(purchase.date.formatted(date: .numeric, time: .omitted))
+                                    .bold()
+                                
+                                Text(purchase.totalPrice, format: .currency(code: "BRL"))
                             }
                             
                             Spacer()
                             
                             Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
+                                .foregroundStyle(purchase.isPaid ? .green : .red)
                         }
                     }
                 }

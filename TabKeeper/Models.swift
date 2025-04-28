@@ -24,6 +24,14 @@ class Customer {
     }
 }
 
+extension Customer {
+    var totalDebt: Decimal {
+        purchases
+            .filter { !$0.isPaid }
+            .reduce(Decimal(0)) { $0 + $1.totalPrice }
+    }
+}
+
 @Model
 class Purchase {
     var id: UUID = UUID()

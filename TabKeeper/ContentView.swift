@@ -10,7 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
-    @Query var customers: [Customer]
+    @Query var customers: [Customer] // TODO: order by debt / recent
     
     var body: some View {
         NavigationStack {
@@ -22,8 +22,7 @@ struct ContentView: View {
                         VStack(alignment: .leading) {
                             Text(customer.name)
                                 .bold()
-                            Text(customer.phoneNumber)
-                                .font(.caption)
+                            Text("Devendo \(customer.totalDebt, format: .currency(code: "BRL"))")
                         }
                     }
                 }

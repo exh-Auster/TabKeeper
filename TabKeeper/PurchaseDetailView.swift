@@ -27,13 +27,24 @@ struct PurchaseDetailView: View {
             }
             
             Section {
-                HStack {
-                    TextField("Novo item", text: $newItemName, axis: .vertical)
-                    Button {
-                        #warning("Not implemented")
-                        newItemName = ""
-                    } label: {
-                        Image(systemName: "plus")
+                Toggle("Pago", isOn: $purchase.isPaid)
+                
+                #warning("Not implemented")
+                if purchase.isPaid {
+                    DatePicker("Data de pagamento", selection: .constant(.now), displayedComponents: .date)
+                }
+            }
+            
+            if !purchase.isPaid {
+                Section {
+                    HStack {
+                        TextField("Novo item", text: $newItemName, axis: .vertical)
+                        Button {
+                            #warning("Not implemented")
+                            newItemName = ""
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -69,6 +80,7 @@ struct PurchaseDetailView: View {
         }
         .navigationTitle(Text(purchase.date, format: .dateTime.day().month().year()))
         .navigationBarTitleDisplayMode(.inline)
+        .animation(.default, value: purchase.isPaid)
         .toolbar {
             Button("Compartilhar", systemImage: "square.and.arrow.up") {
                 #warning("Not implemented")

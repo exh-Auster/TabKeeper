@@ -13,9 +13,32 @@ struct CustomerDetailView: View {
     @Bindable var customer: Customer
     
     var body: some View {
-        List {
-            Section("Compras") {
-                ForEach(customer.purchases) { purchase in
+        List { // TODO: extract view
+            Section("Em aberto") {
+                ForEach(customer.purchases.filter({ !$0.isPaid })) { purchase in
+                    NavigationLink {
+                        PurchaseDetailView(purchase: purchase)
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(purchase.date.formatted(date: .numeric, time: .omitted))
+                                    .bold()
+                                
+                                Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                            }
+                            
+                            Spacer()
+                            
+                            Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
+                                .foregroundStyle(purchase.isPaid ? .green : .red)
+                        }
+                    }
+                }
+                .onDelete(perform: deletePurchase)
+            }
+            
+            Section("Pagas") {
+                ForEach(customer.purchases.filter({ $0.isPaid })) { purchase in
                     NavigationLink {
                         PurchaseDetailView(purchase: purchase)
                     } label: {
@@ -37,7 +60,7 @@ struct CustomerDetailView: View {
                 .onDelete(perform: deletePurchase)
             }
         }
-        .navigationTitle(customer.name)
+        .navigationTitle($customer.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button("Adicionar Compra", systemImage: "plus") {

@@ -12,13 +12,13 @@ struct CustomerDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Bindable var customer: Customer
     
+    @Binding var path: NavigationPath
+    
     var body: some View {
         List { // TODO: extract view
             Section("Em aberto") {
                 ForEach(customer.purchases.filter({ !$0.isPaid })) { purchase in
-                    NavigationLink {
-                        PurchaseDetailView(purchase: purchase)
-                    } label: {
+                    NavigationLink(value: purchase) {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(purchase.date.formatted(date: .numeric, time: .omitted))
@@ -39,9 +39,7 @@ struct CustomerDetailView: View {
             
             Section("Pagas") {
                 ForEach(customer.purchases.filter({ $0.isPaid })) { purchase in
-                    NavigationLink {
-                        PurchaseDetailView(purchase: purchase)
-                    } label: {
+                    NavigationLink(value: purchase) {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(purchase.date.formatted(date: .numeric, time: .omitted))
@@ -62,11 +60,15 @@ struct CustomerDetailView: View {
         }
         .navigationTitle($customer.name)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: Purchase.self, destination: { purchase in
+            PurchaseDetailView(purchase: purchase, path: $path)
+        })
         .toolbar {
             Button("Adicionar Compra", systemImage: "plus") {
-                #warning("Not implemented")
+                let newPurchase = Purchase(customer: customer)
+                modelContext.insert(newPurchase)
+                path.append(newPurchase)
             }
-            .disabled(true)
         }
     }
     
@@ -83,7 +85,7 @@ struct CustomerDetailView: View {
     let customer = try! context.fetch(FetchDescriptor<Customer>()).first!
 
     NavigationStack {
-        CustomerDetailView(customer: customer)
+        CustomerDetailView(customer: customer, path: .constant(NavigationPath()))
             .modelContainer(PreviewSampleData.container)
     }
 }

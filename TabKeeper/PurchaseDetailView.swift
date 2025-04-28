@@ -12,6 +12,8 @@ struct PurchaseDetailView: View {
     @Environment(\.modelContext) var modelContext
     @Bindable var purchase: Purchase
     
+    @Binding var path: NavigationPath
+    
     @State var newItemName = ""
     
     var body: some View {
@@ -103,6 +105,6 @@ struct PurchaseDetailView: View {
     let purchase = try! context.fetch(FetchDescriptor<Purchase>()).first!
     
     NavigationStack {
-        PurchaseDetailView(purchase: purchase)
+        PurchaseDetailView(purchase: purchase, path: .constant(NavigationPath()))
     }
 }

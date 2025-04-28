@@ -12,17 +12,16 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var customers: [Customer] // TODO: order by debt / recent
     
+    @State var path = NavigationPath()
     @State var searchQuery = ""
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             List {
                 ForEach(searchQuery.isEmpty // TODO: move
                         ? customers
                         : customers.filter { $0.name.localizedStandardContains(searchQuery) }) { customer in
-                    NavigationLink {
-                        CustomerDetailView(customer: customer)
-                    } label: {
+                    NavigationLink(value: customer) {
                         VStack(alignment: .leading) {
                             Text(customer.name)
                                 .bold()
@@ -32,6 +31,9 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Clientes")
+            .navigationDestination(for: Customer.self, destination: { customer in
+                CustomerDetailView(customer: customer, path: $path)
+            })
             .searchable(
                 text: $searchQuery,
                 placement: .navigationBarDrawer(displayMode: .always),

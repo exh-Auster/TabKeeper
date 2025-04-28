@@ -22,11 +22,11 @@ struct PurchaseDetailView: View {
         List {
             Section("Total") {
                 HStack {
-                    Text("\(purchase.items.reduce(0) { $0 + $1.quantity }) itens") // FIXME: item count not updating on delete
+                    Text("\(purchase.totalQuantity) itens") // FIXME: item count not updating on delete
                     
                     Spacer()
                     
-                    Text(grandTotal, format: .currency(code: "BRL"))
+                    Text(purchase.totalPrice, format: .currency(code: "BRL"))
                 }
             }
             
@@ -58,7 +58,7 @@ struct PurchaseDetailView: View {
                     VStack(alignment: .trailing) {
                         Text("\(item.quantity) x \(item.price, format: .currency(code: "BRL"))") // FIXME: times symbol
                             .font(.caption)
-                        Text(Decimal(item.quantity) * item.price, format: .currency(code: "BRL"))
+                        Text(item.totalPrice, format: .currency(code: "BRL"))
                             .bold()
                     }
                 }

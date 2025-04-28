@@ -41,6 +41,16 @@ class Purchase {
     }
 }
 
+extension Purchase {
+    var totalQuantity: Int {
+        items.reduce(0) { $0 + $1.quantity }
+    }
+    
+    var totalPrice: Decimal {
+        items.reduce(Decimal(0)) { $0 + $1.totalPrice }
+    }
+}
+
 @Model
 class Item {
     var id: UUID = UUID()
@@ -55,5 +65,11 @@ class Item {
         self.price = price
         self.quantity = quantity
         self.purchase = purchase
+    }
+}
+
+extension Item {
+    var totalPrice: Decimal {
+        Decimal(quantity) * price
     }
 }

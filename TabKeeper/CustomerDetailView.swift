@@ -30,6 +30,9 @@ struct CustomerDetailView: View {
                         }
                     }
                 }
+                .onDelete { _ in
+                    #warning("Not implemented")
+                }
             }
         }
         .navigationTitle(customer.name)

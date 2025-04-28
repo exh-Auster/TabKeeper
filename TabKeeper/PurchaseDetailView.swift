@@ -21,7 +21,7 @@ struct PurchaseDetailView: View {
         List {
             Section("Total") {
                 HStack {
-                    Text("\(purchase.items.count) itens")
+                    Text("\(purchase.items.count) itens") // FIXME: count * quantity
                     
                     Spacer()
                     
@@ -29,19 +29,45 @@ struct PurchaseDetailView: View {
                 }
             }
             
-            ForEach(purchase.items) { item in
+            Section {
+                Button("Adicionar item") {
+                    #warning("Not implemented")
+                }
+            }
+            
+            ForEach($purchase.items) { $item in
                 HStack {
                     VStack(alignment: .leading) {
                         Text(item.name)
-                        Text("\(item.quantity) x \(item.price, format: .currency(code: "BRL"))")
+                            .bold()
+                        
+                        HStack {
+                            Stepper("\(item.quantity)", value: $item.quantity, in: 1...99)
+                                .labelsHidden()
+                                .sensoryFeedback(trigger: item.quantity) { oldValue, newValue in
+                                    return newValue > oldValue ? .increase : .decrease
+                                }
+                            
+                            Text(item.quantity, format: .number)
+                        }
                     }
                     
                     Spacer()
                     
-                    Text(Decimal(item.quantity) * item.price, format: .currency(code: "BRL"))
+                    VStack(alignment: .trailing) {
+                        Text("\(item.quantity) x \(item.price, format: .currency(code: "BRL"))") // FIXME: times symbol
+                            .font(.caption)
+                        Text(Decimal(item.quantity) * item.price, format: .currency(code: "BRL"))
+                            .bold()
+                    }
                 }
             }
+            .onDelete { _ in
+                #warning("Not implemented")
+            }
         }
+        .navigationTitle(Text(purchase.date, format: .dateTime.day().month().year()))
+        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             Button("Compartilhar", systemImage: "square.and.arrow.up") {
                 #warning("Not implemented")
@@ -54,5 +80,7 @@ struct PurchaseDetailView: View {
     let context = PreviewSampleData.container.mainContext
     let purchase = try! context.fetch(FetchDescriptor<Purchase>()).first!
     
-    PurchaseDetailView(purchase: purchase)
+    NavigationStack {
+        PurchaseDetailView(purchase: purchase)
+    }
 }

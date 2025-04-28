@@ -37,7 +37,7 @@ struct PreviewSampleData {
                 context.insert(customer)
                 
                 for _ in 0..<3 {
-                    let purchase = Purchase(customer: customer, isPaid: Bool.random())
+                    let purchase = Purchase(date: Date().addingTimeInterval(TimeInterval(-Int.random(in: 1...100) * 86400)), customer: customer, isPaid: Bool.random())
                     
                     let itemCount = Int.random(in: 3...20)
                     for _ in 0..<itemCount {

@@ -12,10 +12,14 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var customers: [Customer] // TODO: order by debt / recent
     
+    @State var searchQuery = ""
+    
     var body: some View {
         NavigationStack {
             List {
-                ForEach(customers) { customer in
+                ForEach(searchQuery.isEmpty // TODO: move
+                        ? customers
+                        : customers.filter { $0.name.localizedStandardContains(searchQuery) }) { customer in
                     NavigationLink {
                         CustomerDetailView(customer: customer)
                     } label: {
@@ -28,6 +32,11 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Clientes")
+            .searchable(
+                text: $searchQuery,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "Pesquisar"
+            )
             .toolbar {
                 Button("Adicionar Cliente", systemImage: "plus") {
                     #warning("Not implemented")

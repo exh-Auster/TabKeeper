@@ -41,9 +41,10 @@ struct ContentView: View {
             )
             .toolbar {
                 Button("Adicionar Cliente", systemImage: "plus") {
-                    #warning("Not implemented")
+                    let newCustomer = Customer(phoneNumber: " ", name: " ") // FIXME: arguments
+                    modelContext.insert(newCustomer)
+                    path.append(newCustomer)
                 }
-                .disabled(true)
             }
         }
     }

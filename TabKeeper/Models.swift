@@ -39,6 +39,8 @@ class Purchase {
     var date: Date
     var customer: Customer?
     
+    var comment: String = ""
+    
     var items: [Item] = []
     var isPaid: Bool = false
     
@@ -64,16 +66,16 @@ extension Purchase {
 @Model
 class Item {
     var id: UUID
-    var name: String
-    var price: Decimal
+    var product: Product
+    var unitPrice: Decimal
     var quantity: Int
     
     var purchase: Purchase?
     
-    init(id: UUID = UUID(), name: String, price: Decimal, quantity: Int, purchase: Purchase) {
+    init(id: UUID = UUID(), product: Product, unitPrice: Decimal? = nil, quantity: Int, purchase: Purchase? = nil) {
         self.id = id
-        self.name = name
-        self.price = price
+        self.product = product
+        self.unitPrice = unitPrice ?? product.price
         self.quantity = quantity
         self.purchase = purchase
     }
@@ -81,6 +83,20 @@ class Item {
 
 extension Item {
     var totalPrice: Decimal {
-        Decimal(quantity) * price
+        Decimal(quantity) * unitPrice
+    }
+}
+
+@Model class Product: Identifiable, Hashable {
+    var id: UUID
+    var name: String
+    var details: String
+    var price: Decimal
+    
+    init(id: UUID = UUID(), name: String, details: String = "", price: Decimal) {
+        self.id = id
+        self.name = name
+        self.details = details
+        self.price = price
     }
 }

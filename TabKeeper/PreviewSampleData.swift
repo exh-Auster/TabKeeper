@@ -12,7 +12,7 @@ import SwiftData
 struct PreviewSampleData {
     static var container: ModelContainer = {
         do {
-            let schema = Schema([Customer.self, Purchase.self, Item.self])
+            let schema = Schema([Customer.self, Purchase.self, Item.self, Product.self])
             let configuration = ModelConfiguration(isStoredInMemoryOnly: true)
             let container = try ModelContainer(for: schema, configurations: [configuration])
             
@@ -24,11 +24,19 @@ struct PreviewSampleData {
                 "Rafael Alves", "Patrícia Mendes"
             ]
             
-            let sampleItems = [
-                "Arroz", "Feijão", "Macarrão", "Óleo", "Sal", "Açúcar", "Café",
-                "Farinha", "Leite", "Biscoito", "Margarina", "Pão", "Sabonete",
-                "Shampoo", "Detergente", "Fralda", "Cerveja", "Refrigerante",
-                "Suco", "Chocolate"
+            let sampleProducts = [
+                Product(name: "Item 1", details: "300g", price: 1),
+                Product(name: "Item 2", price: 2),
+                Product(name: "Item 3", details: "Retornável", price: 3),
+                Product(name: "Item 4", price: 4),
+                Product(name: "Item 5", price: 0.50),
+                Product(name: "Item 6", price: 6),
+                Product(name: "Item 7", details: "300ml", price: 7),
+                Product(name: "Item 8", price: 8),
+                Product(name: "Item 9", details: "Limão", price: 9),
+                Product(name: "Item 10", price: 10.10),
+                Product(name: "Item 11", price: 11),
+                Product(name: "Item 12", price: 12),
             ]
             
             for (index, name) in sampleNames.enumerated() {
@@ -36,15 +44,19 @@ struct PreviewSampleData {
                 let customer = Customer(phoneNumber: phone, name: name)
                 context.insert(customer)
                 
-                for _ in 0..<3 {
+                for _ in 0..<5 {
                     let purchase = Purchase(date: Date().addingTimeInterval(TimeInterval(-Int.random(in: 1...100) * 86400)), customer: customer, isPaid: Bool.random())
                     
                     let itemCount = Int.random(in: 3...20)
                     for _ in 0..<itemCount {
-                        let itemName = sampleItems.randomElement()!
-                        let price = Decimal(Double.random(in: 2...50))
-                        let quantity = Int.random(in: 1...5)
-                        _ = Item(name: itemName, price: price, quantity: quantity, purchase: purchase)
+                        let product = sampleProducts.randomElement()!
+                        
+                        if let existingItemIndex = purchase.items.firstIndex(where: { $0.product == product }) {
+                            purchase.items[existingItemIndex].quantity += 1
+                        } else {
+                            let quantity = Int.random(in: 1...5)
+                            _ = Item(product: product, quantity: quantity, purchase: purchase)
+                        }
                     }
                 }
             }

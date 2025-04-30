@@ -17,6 +17,9 @@ struct PurchaseDetailView: View {
     @State var showingNewItemScreen = false
     @State var newItemName = ""
     
+    @State var showingEditDateScreen = false
+    @State var editPurchaseDate = Date.now
+    
     var body: some View {
         List {
             Section("Total") {
@@ -30,6 +33,10 @@ struct PurchaseDetailView: View {
                     
                     Text(purchase.totalPrice, format: .currency(code: "BRL"))
                 }
+            }
+            .onLongPressGesture(minimumDuration: 2, maximumDistance: 10) {
+                // TODO: move to an appropriate location
+                showingEditDateScreen = true
             }
             
             Section {
@@ -100,6 +107,34 @@ struct PurchaseDetailView: View {
             NavigationStack {
                 AddItemView(purchase: purchase)
             }
+        }
+        .sheet(isPresented: $showingEditDateScreen) {
+            NavigationStack {
+                Form {
+                    DatePicker("Data da Compra", selection: $editPurchaseDate, displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                }
+                .presentationDetents([.fraction(0.6)])
+                .navigationTitle("Data da Compra")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Salvar") {
+                            purchase.date = editPurchaseDate
+                            showingEditDateScreen = false
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancelar") {
+                            showingEditDateScreen = false
+                        }
+                    }
+                }
+            }
+        }
+        .onAppear {
+            editPurchaseDate = purchase.date
         }
     }
     

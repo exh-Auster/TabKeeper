@@ -30,7 +30,12 @@ struct ContentView: View {
                         VStack(alignment: .leading) {
                             Text(customer.name)
                                 .bold()
-                            Text("Devendo \(customer.totalDebt, format: .currency(code: "BRL"))")
+                            Text("\(customer.totalDebt, format: .currency(code: "BRL"))")
+                        }
+                        .contextMenu {
+                            NavigationLink("Editar") {
+                                EditCustomerView(existingCustomer: customer)
+                            }
                         }
                     }
                 }

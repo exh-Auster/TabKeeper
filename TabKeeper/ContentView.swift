@@ -12,6 +12,11 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var customers: [Customer] // TODO: order by debt / recent
     
+    @State var newCustomerName = ""
+    @State var newCustomerPhoneNumber = ""
+    
+    @State var showingNewCustomerAlert = false
+    
     @State var path = NavigationPath()
     @State var searchQuery = ""
     
@@ -41,10 +46,23 @@ struct ContentView: View {
             )
             .toolbar {
                 Button("Adicionar Cliente", systemImage: "plus") {
-                    let newCustomer = Customer(phoneNumber: " ", name: " ") // FIXME: arguments
+                    showingNewCustomerAlert = true
+                }
+            }
+            .alert("Novo Cliente", isPresented: $showingNewCustomerAlert) {
+                TextField("Nome", text: $newCustomerName)
+                TextField("Telefone (opcional)", text: $newCustomerPhoneNumber)
+                
+                Button("Cancelar", role: .cancel) { }
+                Button("OK") {
+                    let newCustomer = Customer(phoneNumber: newCustomerPhoneNumber, name: newCustomerName)
                     modelContext.insert(newCustomer)
                     path.append(newCustomer)
+                    
+                    newCustomerName = ""
+                    newCustomerPhoneNumber = ""
                 }
+                .disabled(newCustomerName.isEmpty)
             }
         }
     }

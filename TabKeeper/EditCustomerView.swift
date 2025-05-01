@@ -5,6 +5,7 @@
 //  Created by Felipe Ribeiro on 30/04/25.
 //
 
+import Combine
 import SwiftUI
 
 struct EditCustomerView: View {
@@ -26,7 +27,16 @@ struct EditCustomerView: View {
     var body: some View {
         Form {
             TextField("Nome", text: $name)
+                .textContentType(.name)
             TextField("Telefone", text: $phoneNumber)
+                .keyboardType(.numberPad)
+                .textContentType(.telephoneNumber)
+                .onReceive(Just(phoneNumber)) { newValue in
+                    let filtered = newValue.filter { "0123456789".contains($0) }
+                    if filtered != newValue {
+                        self.phoneNumber = filtered
+                    }
+                }
         }
         .navigationTitle(existingCustomer == nil ? "Novo Cliente" : "Editar Cliente")
         .navigationBarBackButtonHidden()

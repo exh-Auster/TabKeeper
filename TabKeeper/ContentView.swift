@@ -5,6 +5,7 @@
 //  Created by Felipe Ribeiro on 27/04/25.
 //
 
+import Combine
 import SwiftData
 import SwiftUI
 
@@ -56,9 +57,22 @@ struct ContentView: View {
             }
             .alert("Novo Cliente", isPresented: $showingNewCustomerAlert) {
                 TextField("Nome", text: $newCustomerName)
+                    .textContentType(.name)
                 TextField("Telefone (opcional)", text: $newCustomerPhoneNumber)
+                    .textContentType(.telephoneNumber)
+                    .keyboardType(.numberPad)
+                    .onReceive(Just(newCustomerPhoneNumber)) { newValue in
+                        let filtered = newValue.filter { "0123456789".contains($0) }
+                        if filtered != newValue {
+                            self.newCustomerPhoneNumber = filtered
+                        }
+                    }
                 
-                Button("Cancelar", role: .cancel) { }
+                Button("Cancelar", role: .cancel) {
+                    newCustomerName = ""
+                    newCustomerPhoneNumber = ""
+                }
+                
                 Button("OK") {
                     let newCustomer = Customer(phoneNumber: newCustomerPhoneNumber, name: newCustomerName)
                     modelContext.insert(newCustomer)
@@ -68,6 +82,9 @@ struct ContentView: View {
                     newCustomerPhoneNumber = ""
                 }
                 .disabled(newCustomerName.isEmpty)
+                .disabled(newCustomerPhoneNumber.count > 0 && newCustomerPhoneNumber.count < 11 )
+                
+                // TODO:
             }
         }
     }

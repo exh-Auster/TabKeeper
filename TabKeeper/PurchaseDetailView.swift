@@ -99,9 +99,29 @@ struct PurchaseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.default, value: purchase.isPaid) // TODO: improve animation
         .toolbar {
-            Button("Compartilhar", systemImage: "square.and.arrow.up") {
-                #warning("Not implemented")
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    let text = toString(purchase: purchase)
+                    
+                    if let url = URL(string: "whatsapp://send?phone=\(purchase.customer?.phoneNumber ?? "")&text=\(text)") {
+                        UIApplication.shared.open(url)
+                    }
+                } label: { // TODO: confirm approach
+                    Image("WhatsApp_Digital_Glyph_Black")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 24, height: 24)
+                }
+//                .labelStyle(.iconOnly)
             }
+            
+//            #if DEBUG
+//            NavigationLink {
+//                Text(toString(purchase: purchase))
+//            } label: {
+//                Text("DEBUG")
+//            }
+//            #endif
         }
         .sheet(isPresented: $showingNewItemScreen) {
             NavigationStack {
@@ -145,6 +165,37 @@ struct PurchaseDetailView: View {
             purchase.items.remove(at: index)
             modelContext.delete(item)
         }
+    }
+    
+    func toString(purchase: Purchase) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+
+        var result = ""
+
+//        result.append("```")
+
+        result.append("*DATA: \(purchase.date.formatted(date: .numeric, time: .omitted))*\n\n")
+
+        for item in purchase.items {
+            let unit = formatter.string(from: item.unitPrice as NSDecimalNumber) ?? "\(item.unitPrice)"
+            let total = formatter.string(from: item.totalPrice as NSDecimalNumber) ?? "\(item.totalPrice)"
+
+            result.append("*\(item.product.name)* \(item.product.details)\n")
+            result.append("\(unit) x \(item.quantity) = \(total)\n\n")
+        }
+
+        let totalFormatted = formatter.string(from: purchase.totalPrice as NSDecimalNumber) ?? "\(purchase.totalPrice)"
+        result.append("*TOTAL = \(totalFormatted)*")
+
+//        result.append("```")
+        
+        #if DEBUG
+        print(result)
+        #endif
+        
+        return result
     }
 }
 

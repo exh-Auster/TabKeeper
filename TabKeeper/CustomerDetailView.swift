@@ -14,50 +14,91 @@ struct CustomerDetailView: View {
     
     @Binding var path: NavigationPath
     
+    var hasPurchases: Bool {
+        !customer.purchases.isEmpty
+    }
+    
+    var unpaidPurchases: [Purchase] {
+        customer.purchases.filter { !$0.isPaid }
+    }
+    
+    var paidPurchases: [Purchase] {
+        customer.purchases.filter { $0.isPaid }
+    }
+    
     var body: some View {
         List { // TODO: extract view
-            Section("Em aberto") {
-                ForEach(customer.purchases.filter({ !$0.isPaid })) { purchase in
-                    NavigationLink(value: purchase) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(purchase.date.formatted(date: .numeric, time: .omitted))
-                                    .bold()
-                                
-                                Text(purchase.totalPrice, format: .currency(code: "BRL"))
+            if !hasPurchases { // FIXME: delayed refresh
+                ContentUnavailableView(
+                    "Sem Histórico",
+                    systemImage: "cube.box",
+                    description: Text("Este cliente ainda não tem compras registradas.\n\nAdicione a primeira compra tocando no botão de \"+\" acima.")
+                )
+            } else {
+                Section("Em aberto") {
+                    if unpaidPurchases.isEmpty {
+                        ContentUnavailableView(
+                            "Cliente Em Dia",
+                            systemImage: "person.crop.circle.badge.checkmark",
+                            description: Text("Futuras compras em aberto deste cliente aparecerão aqui.")
+                        )
+                    } else {
+                        ForEach(unpaidPurchases) { purchase in
+                            NavigationLink(value: purchase) {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(purchase.date.formatted(date: .numeric, time: .omitted))
+                                            .bold()
+                                        
+                                        Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
+                                        .foregroundStyle(purchase.isPaid ? .green : .red)
+                                }
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
-                                .foregroundStyle(purchase.isPaid ? .green : .red)
+                        }
+                        .onDelete { indexSet in
+                            deletePurchase(from: unpaidPurchases, at: indexSet)
                         }
                     }
                 }
-                .onDelete(perform: deletePurchase)
-            }
-            
-            Section("Pagas") {
-                ForEach(customer.purchases.filter({ $0.isPaid })) { purchase in
-                    NavigationLink(value: purchase) {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(purchase.date.formatted(date: .numeric, time: .omitted))
-                                    .bold()
-                                
-                                Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                
+                Section("Pagas") {
+                    if paidPurchases.isEmpty {
+                        ContentUnavailableView(
+                            "Sem Histórico de Pagamento",
+                            systemImage: "cube.box",
+                            description: Text("O histórico de compras pagas deste cliente aparecerá aqui.")
+                        )
+                    } else {
+                        ForEach(paidPurchases) { purchase in
+                            NavigationLink(value: purchase) {
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(purchase.date.formatted(date: .numeric, time: .omitted))
+                                            .bold()
+                                        
+                                        Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
+                                        .foregroundStyle(purchase.isPaid ? .green : .red)
+                                }
                             }
-                            
-                            Spacer()
-                            
-                            Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
-                                .foregroundStyle(purchase.isPaid ? .green : .red)
+                        }
+                        .onDelete { indexSet in
+                            deletePurchase(from: paidPurchases, at: indexSet)
                         }
                     }
                 }
-                .onDelete(perform: deletePurchase)
             }
         }
+        .animation(.bouncy, value: customer.purchases.count)
         .navigationTitle($customer.name)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: Purchase.self, destination: { purchase in

@@ -45,10 +45,16 @@ struct PurchaseDetailView: View {
             
             Section {
                 Toggle("Pago", isOn: $purchase.isPaid)
+                    .onChange(of: purchase.isPaid) { _, newValue in
+                        if newValue == false { purchase.datePaid = nil }
+                        else { purchase.datePaid = .now }
+                    }
                 
-                #warning("Not implemented")
                 if purchase.isPaid {
-                    DatePicker("Data de pagamento", selection: .constant(.now), displayedComponents: .date)
+                    DatePicker("Data de pagamento", selection: Binding(
+                        get: { purchase.datePaid ?? Date() },
+                        set: { purchase.datePaid = $0 }
+                    ), displayedComponents: .date)
                 }
             }
             
@@ -99,6 +105,17 @@ struct PurchaseDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .animation(.default, value: purchase.isPaid) // TODO: improve animation
         .toolbar {
+//            ToolbarItem {
+//                ShareLink(
+//                    item: toString(purchase: purchase),
+//                    preview: SharePreview(
+//                        "Detalhes da venda"
+//                        + (purchase.customer.map { " para \($0.name)" } ?? "")
+//                        + " em \(purchase.date.formatted(date: .numeric, time: .omitted))"
+//                    )
+//                )
+//            }
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     let text = toString(purchase: purchase)
@@ -134,7 +151,8 @@ struct PurchaseDetailView: View {
                     DatePicker("Data da Compra", selection: $editPurchaseDate, displayedComponents: .date)
                         .datePickerStyle(.graphical)
                 }
-                .presentationDetents([.fraction(0.6)])
+                .contentMargins(.top, 10)
+                .presentationDetents([.medium])
                 .navigationTitle("Data da Compra")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {

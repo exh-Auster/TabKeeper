@@ -34,8 +34,11 @@ struct EditProductView: View {
     var body: some View {
         Form {
             TextField("Nome", text: $name)
+                .textInputAutocapitalization(.words)
             TextField("Tipo", text: $details)
+                .textInputAutocapitalization(.words)
             TextField("Preço", value: $price, format: .currency(code: "BRL"))
+                .keyboardType(.decimalPad)
         }
         .navigationTitle(existingProduct == nil ? "Novo Produto" : "Editar Produto")
         .toolbar {

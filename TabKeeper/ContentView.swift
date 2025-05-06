@@ -51,8 +51,16 @@ struct ContentView: View {
                 prompt: "Pesquisar"
             )
             .toolbar {
-                Button("Adicionar Cliente", systemImage: "plus") {
-                    showingNewCustomerAlert = true
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Reset", systemImage: "trash", role: .destructive) {
+                        deleteAllData()
+                    }
+                }
+                
+                ToolbarItem {
+                    Button("Adicionar Cliente", systemImage: "plus") {
+                        showingNewCustomerAlert = true
+                    }
                 }
             }
             .alert("Novo Cliente", isPresented: $showingNewCustomerAlert) {
@@ -86,6 +94,32 @@ struct ContentView: View {
                 
                 // TODO:
             }
+        }
+    }
+    
+    func deleteAllData() {
+        do {
+            let customers = try modelContext.fetch(FetchDescriptor<Customer>())
+            let purchases = try modelContext.fetch(FetchDescriptor<Purchase>())
+            let items     = try modelContext.fetch(FetchDescriptor<Item>())
+            let products  = try modelContext.fetch(FetchDescriptor<Product>())
+
+            for customer in customers {
+                modelContext.delete(customer)
+            }
+            for purchase in purchases {
+                modelContext.delete(purchase)
+            }
+            for item in items {
+                modelContext.delete(item)
+            }
+            for product in products {
+                modelContext.delete(product)
+            }
+
+            try modelContext.save()
+        } catch {
+            print("Error wiping data: \(error)")
         }
     }
 }

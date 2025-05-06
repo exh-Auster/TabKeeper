@@ -113,9 +113,9 @@ struct CustomerDetailView: View {
         }
     }
     
-    func deletePurchase(_ indexSet: IndexSet) {
+    func deletePurchase(from filteredPurchases: [Purchase], at indexSet: IndexSet) {
         for index in indexSet {
-            let purchase = customer.purchases[index]
+            let purchase = filteredPurchases[index]
             modelContext.delete(purchase)
         }
     }

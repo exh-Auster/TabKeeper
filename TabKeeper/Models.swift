@@ -42,9 +42,18 @@ class Purchase {
     var comment: String = ""
     
     var items: [Item] = []
-    var isPaid: Bool = false
     
-    init(id: UUID = UUID(), date: Date = Date.now, customer: Customer, items: [Item] = [], isPaid: Bool = false) {
+    var isPaid: Bool = false
+    var datePaid: Date?
+    
+    init(
+        id: UUID = UUID(),
+        date: Date = Date.now,
+        customer: Customer,
+        items: [Item] = [],
+        isPaid: Bool = false,
+        datePaid: Date? = nil
+    ) {
         self.id = id
         self.date = date
         self.customer = customer

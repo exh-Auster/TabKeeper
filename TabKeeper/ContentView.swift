@@ -24,18 +24,33 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
-                ForEach(searchQuery.isEmpty // TODO: move
-                        ? customers
-                        : customers.filter { $0.name.localizedStandardContains(searchQuery) }) { customer in
-                    NavigationLink(value: customer) {
-                        VStack(alignment: .leading) {
-                            Text(customer.name)
-                                .bold()
-                            Text("\(customer.totalDebt, format: .currency(code: "BRL"))")
-                        }
-                        .contextMenu {
-                            NavigationLink("Editar") {
-                                EditCustomerView(existingCustomer: customer)
+                if customers.isEmpty {
+                    ContentUnavailableView(
+                        "Nenhum Cliente Encontrado",
+                        systemImage: "cube.box",
+                        description: Text("Adicione seu primeiro cliente tocando no botão de \"+\" acima.")
+                    )
+                    //                    } else if customers.filter({ $0.name.localizedStandardContains(searchQuery) }).isEmpty {
+                    //                        ContentUnavailableView.search
+                } else {
+                    ForEach(searchQuery.isEmpty // TODO: move
+                            ? customers
+                            : customers.filter { $0.name.localizedStandardContains(searchQuery) }) { customer in
+                        NavigationLink(value: customer) {
+                            VStack(alignment: .leading) {
+                                Text(customer.name)
+                                    .bold()
+                                Text("\(customer.totalDebt, format: .currency(code: "BRL"))")
+                            }
+                            .contextMenu {
+                                NavigationLink {
+                                    EditCustomerView(existingCustomer: customer)
+                                } label: {
+                                    Label("Editar", systemImage: "pencil")
+                                }
+                            } preview: {
+                                CustomerDetailView(customer: customer, path: $path)
+                                    .navigationBarTitleDisplayMode(.large)
                             }
                         }
                     }

@@ -45,19 +45,7 @@ struct CustomerDetailView: View {
                     } else {
                         ForEach(unpaidPurchases) { purchase in
                             NavigationLink(value: purchase) {
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(purchase.date.formatted(date: .numeric, time: .omitted))
-                                            .bold()
-                                        
-                                        Text(purchase.totalPrice, format: .currency(code: "BRL")) // TODO: locale
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
-                                        .foregroundStyle(purchase.isPaid ? .green : .red) // TODO: time since purchase?
-                                }
+                                PurchaseRowView(purchase: purchase)
                             }
                         }
                         .onDelete { indexSet in
@@ -76,19 +64,7 @@ struct CustomerDetailView: View {
                     } else {
                         ForEach(paidPurchases) { purchase in
                             NavigationLink(value: purchase) {
-                                HStack {
-                                    VStack(alignment: .leading) {
-                                        Text(purchase.date.formatted(date: .numeric, time: .omitted))
-                                            .bold()
-                                        
-                                        Text(purchase.totalPrice, format: .currency(code: "BRL"))
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
-                                        .foregroundStyle(purchase.isPaid ? .green : .red)
-                                }
+                                PurchaseRowView(purchase: purchase)
                             }
                         }
                         .onDelete { indexSet in

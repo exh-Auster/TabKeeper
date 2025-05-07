@@ -28,7 +28,7 @@ struct CustomerDetailView: View {
     
     var body: some View {
         List { // TODO: extract view
-            if !hasPurchases { // FIXME: delayed refresh
+            if !hasPurchases {
                 ContentUnavailableView(
                     "Sem Histórico",
                     systemImage: "cube.box",
@@ -118,6 +118,8 @@ struct CustomerDetailView: View {
             let purchase = filteredPurchases[index]
             modelContext.delete(purchase)
         }
+        
+        try? modelContext.save()
     }
 }
 

@@ -66,7 +66,7 @@ struct PurchaseDetailView: View {
                 }
             }
             
-            ForEach($purchase.items.reversed()) { $item in // FIXME: deletion
+            ForEach($purchase.items.reversed()) { $item in // FIXME: order after deletion
                 HStack {
                     VStack(alignment: .leading) {
                         Text(item.product.name)
@@ -99,7 +99,9 @@ struct PurchaseDetailView: View {
                     }
                 }
             }
-            .onDelete(perform: deleteItem)
+            .onDelete { indexSet in
+                deleteItem(from: purchase.items.reversed(), at: indexSet)
+            }
         }
         .navigationTitle(Text(purchase.date, format: .dateTime.day().month().year()))
         .navigationBarTitleDisplayMode(.inline)
@@ -176,13 +178,13 @@ struct PurchaseDetailView: View {
         }
     }
     
-    func deleteItem(_ indexSet: IndexSet) {
+    func deleteItem(from filteredItems: [Item], at indexSet: IndexSet) {
         for index in indexSet {
-            let item = purchase.items[index]
-            #warning("Confirm approach")
-            purchase.items.remove(at: index)
+            let item = filteredItems[index]
             modelContext.delete(item)
         }
+        
+        try? modelContext.save()
     }
     
     func toString(purchase: Purchase) -> String {

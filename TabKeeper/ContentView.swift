@@ -13,13 +13,19 @@ struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @Query var customers: [Customer] // TODO: order by debt / recent
     
-    @State var newCustomerName = ""
-    @State var newCustomerPhoneNumber = ""
+    @State private var newCustomerName = ""
+    @State private var newCustomerPhoneNumber = ""
     
-    @State var showingNewCustomerAlert = false
+    @State private var showingNewCustomerAlert = false
     
-    @State var path = NavigationPath()
-    @State var searchQuery = ""
+    @State private var path = NavigationPath()
+    @State private var searchQuery = ""
+    
+    private var filteredCustomers: [Customer] {
+        searchQuery.isEmpty
+            ? customers
+            : customers.filter { $0.name.localizedStandardContains(searchQuery) }
+    }
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -30,17 +36,15 @@ struct ContentView: View {
                         systemImage: "cube.box",
                         description: Text("Adicione seu primeiro cliente tocando no botão de \"+\" acima.")
                     )
-                    //                    } else if customers.filter({ $0.name.localizedStandardContains(searchQuery) }).isEmpty {
-                    //                        ContentUnavailableView.search
+                } else if !searchQuery.isEmpty && filteredCustomers.isEmpty {
+                    ContentUnavailableView.search
                 } else {
-                    ForEach(searchQuery.isEmpty // TODO: move
-                            ? customers
-                            : customers.filter { $0.name.localizedStandardContains(searchQuery) }) { customer in
+                    ForEach(filteredCustomers) { customer in
                         NavigationLink(value: customer) {
                             VStack(alignment: .leading) {
                                 Text(customer.name)
                                     .bold()
-                                Text("\(customer.totalDebt, format: .currency(code: "BRL"))")
+                                Text("\(customer.totalDebt, format: .currency(code: "BRL"))") // TODO: locale
                             }
                             .contextMenu {
                                 NavigationLink {
@@ -60,10 +64,10 @@ struct ContentView: View {
             .navigationDestination(for: Customer.self, destination: { customer in
                 CustomerDetailView(customer: customer, path: $path)
             })
+            .animation(.default, value: customers)
             .searchable(
                 text: $searchQuery,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "Pesquisar"
+                placement: .navigationBarDrawer(displayMode: .always)
             )
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -88,7 +92,7 @@ struct ContentView: View {
                         let filtered = newValue.filter { "0123456789".contains($0) }
                         if filtered != newValue {
                             self.newCustomerPhoneNumber = filtered
-                        }
+                        } // TODO: extract
                     }
                 
                 Button("Cancelar", role: .cancel) {
@@ -97,22 +101,24 @@ struct ContentView: View {
                 }
                 
                 Button("OK") {
-                    let newCustomer = Customer(phoneNumber: newCustomerPhoneNumber, name: newCustomerName)
-                    modelContext.insert(newCustomer)
-                    path.append(newCustomer)
-                    
-                    newCustomerName = ""
-                    newCustomerPhoneNumber = ""
+                    createCustomer()
                 }
-                .disabled(newCustomerName.isEmpty)
+                .disabled(newCustomerName.isEmpty) // TODO: extract
                 .disabled(newCustomerPhoneNumber.count > 0 && newCustomerPhoneNumber.count < 11 )
-                
-                // TODO:
             }
         }
     }
     
-    func deleteAllData() {
+    private func createCustomer() {
+        let newCustomer = Customer(phoneNumber: newCustomerPhoneNumber, name: newCustomerName)
+        modelContext.insert(newCustomer)
+        path.append(newCustomer)
+        
+        newCustomerName = ""
+        newCustomerPhoneNumber = ""
+    }
+    
+    private func deleteAllData() {
         do {
             if modelContext.hasChanges { try modelContext.save() }
             

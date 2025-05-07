@@ -11,7 +11,7 @@ struct EditProductView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
 
-    var existingProduct: Product?
+    private var existingProduct: Product?
 
     @State private var name: String
     @State private var details: String
@@ -37,7 +37,7 @@ struct EditProductView: View {
                 .textInputAutocapitalization(.words)
             TextField("Tipo", text: $details)
                 .textInputAutocapitalization(.words)
-            TextField("Preço", value: $price, format: .currency(code: "BRL"))
+            TextField("Preço", value: $price, format: .currency(code: "BRL")) // TODO: locale
                 .keyboardType(.decimalPad)
         }
         .navigationTitle(existingProduct == nil ? "Novo Produto" : "Editar Produto")
@@ -48,15 +48,7 @@ struct EditProductView: View {
             
             ToolbarItem(placement: .confirmationAction) {
                 Button("Salvar") {
-                    if let product = existingProduct {
-                        product.name = name
-                        product.details = details
-                        product.price = price
-                    } else {
-                        let newProduct = Product(name: name, details: details, price: price)
-                        modelContext.insert(newProduct)
-                    }
-                    
+                    saveProduct()
                     dismiss()
                 }
                 .disabled(name.isEmpty)
@@ -64,11 +56,26 @@ struct EditProductView: View {
         }
         .navigationBarBackButtonHidden()
         .onAppear {
-            if let product = existingProduct {
-                name = product.name
-                details = product.details
-                price = product.price
-            }
+            loadProduct()
+        }
+    }
+    
+    func loadProduct() {
+        if let product = existingProduct {
+            name = product.name
+            details = product.details
+            price = product.price
+        }
+    }
+    
+    func saveProduct() {
+        if let product = existingProduct {
+            product.name = name
+            product.details = details
+            product.price = price
+        } else {
+            let newProduct = Product(name: name, details: details, price: price)
+            modelContext.insert(newProduct)
         }
     }
 }
@@ -77,7 +84,7 @@ struct EditProductView: View {
     @Previewable @State var path = NavigationPath()
     
     NavigationStack {
-        NavigationLink("X", value: Product(name: "Test", price: 10))
+        NavigationLink("EditProductView Preview", value: Product(name: "EditProductView Preview", price: 10))
             .navigationDestination(for: Product.self) { product in
                 EditProductView(existingProduct: product)
             }

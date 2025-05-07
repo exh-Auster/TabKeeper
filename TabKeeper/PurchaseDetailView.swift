@@ -14,24 +14,24 @@ struct PurchaseDetailView: View {
     
     @Binding var path: NavigationPath
     
-    @State var showingNewItemScreen = false
-    @State var newItemName = ""
+    @State private var showingNewItemScreen = false
+    @State private var newItemName = ""
     
-    @State var showingEditDateScreen = false
-    @State var editPurchaseDate = Date.now
+    @State private var showingEditDateScreen = false
+    @State private var editPurchaseDate = Date.now
     
     var body: some View {
         List {
             Section("Total") {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("\(purchase.items.count) produtos") // FIXME: item count not updating on delete
-                        Text("\(purchase.totalQuantity) itens") // FIXME: item count not updating on delete
+                        Text("\(purchase.items.count) produtos")
+                        Text("\(purchase.totalQuantity) itens")
                     }
                     
                     Spacer()
                     
-                    Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                    Text(purchase.totalPrice, format: .currency(code: "BRL")) // TODO: locale
                 }
             }
             .onLongPressGesture(minimumDuration: 2, maximumDistance: 10) {
@@ -71,7 +71,7 @@ struct PurchaseDetailView: View {
                     VStack(alignment: .leading) {
                         Text(item.product.name)
                             .bold()
-//                        Text(item.product.id.uuidString)
+                        
                         if !item.product.details.isEmpty {
                             Text(item.product.details)
                         }
@@ -92,9 +92,10 @@ struct PurchaseDetailView: View {
                     Spacer()
                     
                     VStack(alignment: .trailing) {
-                        Text("\(item.quantity) x \(item.unitPrice, format: .currency(code: "BRL"))") // FIXME: times symbol
+                        Text("\(item.quantity) × \(item.unitPrice, format: .currency(code: "BRL"))")
                             .font(.caption)
-                        Text(item.totalPrice, format: .currency(code: "BRL"))
+                        
+                        Text(item.totalPrice, format: .currency(code: "BRL")) // TODO: locale
                             .bold()
                     }
                 }
@@ -120,12 +121,11 @@ struct PurchaseDetailView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    let text = toString(purchase: purchase)
-                    
-                    if let url = URL(string: "whatsapp://send?phone=\(purchase.customer?.phoneNumber ?? "")&text=\(text)") {
-                        UIApplication.shared.open(url)
-                    }
-                } label: { // TODO: confirm approach
+                    shareToWhatsApp(
+                        content: toString(purchase: purchase),
+                        to: purchase.customer?.phoneNumber
+                    )
+                } label: {
                     Image("WhatsApp_Digital_Glyph_Black")
                         .renderingMode(.template)
                         .resizable()
@@ -133,14 +133,6 @@ struct PurchaseDetailView: View {
                 }
 //                .labelStyle(.iconOnly)
             }
-            
-//            #if DEBUG
-//            NavigationLink {
-//                Text(toString(purchase: purchase))
-//            } label: {
-//                Text("DEBUG")
-//            }
-//            #endif
         }
         .sheet(isPresented: $showingNewItemScreen) {
             NavigationStack {
@@ -162,7 +154,7 @@ struct PurchaseDetailView: View {
                         Button("Salvar") {
                             purchase.date = editPurchaseDate
                             showingEditDateScreen = false
-                        }
+                        } // TODO: extract?
                     }
                     
                     ToolbarItem(placement: .cancellationAction) {
@@ -185,6 +177,12 @@ struct PurchaseDetailView: View {
         }
         
         try? modelContext.save()
+    }
+    
+    func shareToWhatsApp(content: String, to phoneNumber: String?) {
+        if let url = URL(string: "whatsapp://send?phone=\(phoneNumber ?? "")&text=\(content)") {
+            UIApplication.shared.open(url)
+        }
     }
     
     func toString(purchase: Purchase) -> String {

@@ -12,7 +12,7 @@ struct EditCustomerView: View {
     @Environment(\.modelContext) var modelContext
     @Environment(\.dismiss) var dismiss
     
-    var existingCustomer: Customer?
+    private var existingCustomer: Customer?
     
     @State private var name: String
     @State private var phoneNumber: String
@@ -35,7 +35,7 @@ struct EditCustomerView: View {
                     let filtered = newValue.filter { "0123456789".contains($0) }
                     if filtered != newValue {
                         self.phoneNumber = filtered
-                    }
+                    } // TODO: extract
                 }
         }
         .navigationTitle(existingCustomer == nil ? "Novo Cliente" : "Editar Cliente")
@@ -47,25 +47,31 @@ struct EditCustomerView: View {
             
             ToolbarItem(placement: .confirmationAction) {
                 Button("Salvar") {
-                    if let customer = existingCustomer {
-                        customer.name = name
-                        customer.phoneNumber = phoneNumber
-                    } else {
-                        let newCustomer = Customer(phoneNumber: phoneNumber, name: name)
-                        modelContext.insert(newCustomer)
-                    }
-                    
+                    saveCustomer()
                     dismiss()
                 }
                 .disabled(name.isEmpty)
             }
         }
         .onAppear {
-            if let customer = existingCustomer {
-                name = customer.name
-                phoneNumber = customer.phoneNumber
-            }
-            
+            loadCustomer()
+        }
+    }
+    
+    private func loadCustomer() {
+        if let customer = existingCustomer {
+            name = customer.name
+            phoneNumber = customer.phoneNumber
+        }
+    }
+    
+    private func saveCustomer() {
+        if let customer = existingCustomer {
+            customer.name = name
+            customer.phoneNumber = phoneNumber
+        } else {
+            let newCustomer = Customer(phoneNumber: phoneNumber, name: name)
+            modelContext.insert(newCustomer)
         }
     }
 }

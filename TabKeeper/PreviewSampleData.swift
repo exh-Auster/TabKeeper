@@ -40,7 +40,7 @@ struct PreviewSampleData {
             ]
             
             for (index, name) in sampleNames.enumerated() {
-                let phone = String(format: "(11) 9%04d-%04d", Int.random(in: 1000...9999), Int.random(in: 1000...9999))
+                let phone = String(format: "119%04d%04d", Int.random(in: 1000...9999), Int.random(in: 1000...9999))
                 let customer = Customer(phoneNumber: phone, name: name)
                 context.insert(customer)
                 

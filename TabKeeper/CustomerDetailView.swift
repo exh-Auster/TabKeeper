@@ -14,15 +14,15 @@ struct CustomerDetailView: View {
     
     @Binding var path: NavigationPath
     
-    var hasPurchases: Bool {
+    private var hasPurchases: Bool {
         !customer.purchases.isEmpty
     }
     
-    var unpaidPurchases: [Purchase] {
+    private var unpaidPurchases: [Purchase] {
         customer.purchases.filter { !$0.isPaid }
     }
     
-    var paidPurchases: [Purchase] {
+    private var paidPurchases: [Purchase] {
         customer.purchases.filter { $0.isPaid }
     }
     
@@ -50,13 +50,13 @@ struct CustomerDetailView: View {
                                         Text(purchase.date.formatted(date: .numeric, time: .omitted))
                                             .bold()
                                         
-                                        Text(purchase.totalPrice, format: .currency(code: "BRL"))
+                                        Text(purchase.totalPrice, format: .currency(code: "BRL")) // TODO: locale
                                     }
                                     
                                     Spacer()
                                     
                                     Image(systemName: purchase.isPaid ? "checkmark.circle.fill" : "x.circle")
-                                        .foregroundStyle(purchase.isPaid ? .green : .red)
+                                        .foregroundStyle(purchase.isPaid ? .green : .red) // TODO: time since purchase?
                                 }
                             }
                         }
@@ -106,11 +106,15 @@ struct CustomerDetailView: View {
         })
         .toolbar {
             Button("Adicionar Compra", systemImage: "plus") {
-                let newPurchase = Purchase(customer: customer)
-                modelContext.insert(newPurchase)
-                path.append(newPurchase)
+                createPurchase()
             }
         }
+    }
+    
+    func createPurchase() {
+        let newPurchase = Purchase(customer: customer)
+        modelContext.insert(newPurchase)
+        path.append(newPurchase)
     }
     
     func deletePurchase(from filteredPurchases: [Purchase], at indexSet: IndexSet) {

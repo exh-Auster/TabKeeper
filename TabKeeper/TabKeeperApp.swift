@@ -14,6 +14,10 @@ struct TabKeeperApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Customer.self, Purchase.self, Item.self])
+        #if(DEBUG)
+        .modelContainer(PreviewSampleData.container)
+        #else
+        .modelContainer(for: [Customer.self, Purchase.self, Item.self, Product.self])
+        #endif
     }
 }

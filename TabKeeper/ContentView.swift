@@ -40,23 +40,7 @@ struct ContentView: View {
                     ContentUnavailableView.search
                 } else {
                     ForEach(filteredCustomers) { customer in
-                        NavigationLink(value: customer) {
-                            VStack(alignment: .leading) {
-                                Text(customer.name)
-                                    .bold()
-                                Text("\(customer.totalDebt, format: .currency(code: "BRL"))") // TODO: locale
-                            }
-                            .contextMenu {
-                                NavigationLink {
-                                    EditCustomerView(existingCustomer: customer)
-                                } label: {
-                                    Label("Editar", systemImage: "pencil")
-                                }
-                            } preview: {
-                                CustomerDetailView(customer: customer, path: $path)
-                                    .navigationBarTitleDisplayMode(.large)
-                            }
-                        }
+                        CustomerRowView(customer: customer, path: $path)
                     }
                 }
             }

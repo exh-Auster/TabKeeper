@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var showingNewCustomerAlert = false
     
     @State private var path = NavigationPath()
+    @State private var showingSearch = false
     @State private var searchQuery = ""
     
     private var filteredCustomers: [Customer] {
@@ -49,8 +50,10 @@ struct ContentView: View {
                 CustomerDetailView(customer: customer, path: $path)
             })
             .animation(.default, value: customers)
+            .animation(.default, value: showingSearch)
             .searchable(
                 text: $searchQuery,
+                isPresented: $showingSearch,
                 placement: .navigationBarDrawer(displayMode: .always)
             )
             .toolbar {

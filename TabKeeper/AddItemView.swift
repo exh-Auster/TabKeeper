@@ -37,27 +37,7 @@ struct AddItemView: View {
                             addProduct(product: filteredProduct.product)
                             dismiss()
                         } label: {
-                            HStack {
-                                VStack(alignment: .leading) {
-                                    Text(filteredProduct.product.name)
-//                                        .bold()
-
-                                    if !filteredProduct.product.details.isEmpty {
-                                        Text(filteredProduct.product.details)
-                                            .foregroundStyle(.secondary)
-                                    }
-                                }
-                                
-                                Spacer()
-                                
-                                Text(filteredProduct.product.price, format: .currency(code: "BRL")) // TODO: locale
-                            }
-//                            .frame(minHeight: 44)
-                            .contextMenu {
-                                NavigationLink(value: filteredProduct.product) {
-                                    Label("Editar", systemImage: "pencil")
-                                }
-                            }
+                            ProductRowView(product: filteredProduct.product)
                         }
                     }
                 }

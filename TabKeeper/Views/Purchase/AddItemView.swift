@@ -51,7 +51,7 @@ struct AddItemView: View {
         .navigationDestination(for: Product.self) { product in
             EditProductView(existingProduct: product)
         }
-        .searchable(text: $searchQuery, isPresented: $showingSearch)
+        .searchable(text: $searchQuery, isPresented: $showingSearch, placement: .automatic)
         .toolbar {
             ToolbarItemGroup {
                 Button("Cancelar", role: .cancel) {
@@ -131,6 +131,6 @@ struct AddItemView: View {
             NavigationStack {
                 AddItemView(purchase: Purchase(customer: Customer(phoneNumber: "", name: "AddItemView Preview")))
             }
-            .modelContainer(PreviewSampleData.container)
+            .modelContainer(PreviewSampleData.shared.modelContainer)
         }
 }

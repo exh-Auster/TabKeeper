@@ -104,11 +104,10 @@ struct CustomerDetailView: View {
 }
 
 #Preview {
-    let context = PreviewSampleData.container.mainContext
-    let customer = try! context.fetch(FetchDescriptor<Customer>()).first!
-
+    let customer = Customer.sampleData[3] // TODO: fix
+    
     NavigationStack {
         CustomerDetailView(customer: customer, path: .constant(NavigationPath()))
-            .modelContainer(PreviewSampleData.container)
+            .modelContainer(PreviewSampleData.shared.modelContainer)
     }
 }

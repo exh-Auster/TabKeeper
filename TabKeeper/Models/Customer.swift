@@ -32,3 +32,19 @@ extension Customer {
             .reduce(Decimal(0)) { $0 + $1.totalPrice }
     }
 }
+
+// MARK: -
+extension Customer {
+    static let sampleData = [
+        Customer(phoneNumber: "+5511987654321", name: "João Silva"),
+        Customer(phoneNumber: "+5511987654321", name: "Maria Oliveira"),
+        Customer(phoneNumber: "+5511987654321", name: "Carlos Souza"),
+        Customer(phoneNumber: "+5511987654321", name: "Ana Costa"),
+        Customer(phoneNumber: "+5511987654321", name: "Pedro Santos"),
+        Customer(phoneNumber: "+5511987654321", name: "Luciana Lima"),
+        Customer(phoneNumber: "+5511987654321", name: "Marcos Pereira"),
+        Customer(phoneNumber: "+5511987654321", name: "Fernanda Rocha"),
+        Customer(phoneNumber: "+5511987654321", name: "Rafael Alves"),
+        Customer(phoneNumber: "+5511987654321", name: "Patrícia Mendes"),
+    ]
+}

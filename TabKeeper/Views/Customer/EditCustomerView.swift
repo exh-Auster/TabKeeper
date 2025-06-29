@@ -76,8 +76,16 @@ struct EditCustomerView: View {
     }
 }
 
-#Preview {
+#Preview("New customer") {
     NavigationStack {
         EditCustomerView()
+    }
+}
+
+#Preview("Existing customer") {
+    let customer = Customer.sampleData.first!
+    
+    NavigationStack {
+        EditCustomerView(existingCustomer: customer)
     }
 }

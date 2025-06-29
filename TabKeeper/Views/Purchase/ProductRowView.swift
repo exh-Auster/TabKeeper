@@ -37,8 +37,7 @@ struct ProductRowView: View {
 }
 
 #Preview {
-    let context = PreviewSampleData.container.mainContext
-    let product = try! context.fetch(FetchDescriptor<Product>()).first(where: { !$0.details.isEmpty })!
+    let product = Product.sampleData.first { !$0.details.isEmpty }!
     
     List {
         ProductRowView(product: product)

@@ -218,8 +218,7 @@ struct PurchaseDetailView: View {
 }
 
 #Preview {
-    let context = PreviewSampleData.container.mainContext
-    let purchase = try! context.fetch(FetchDescriptor<Purchase>()).first!
+    let purchase = Purchase.sampleData.first!
     
     NavigationStack {
         PurchaseDetailView(purchase: purchase, path: .constant(NavigationPath()))

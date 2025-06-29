@@ -38,5 +38,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(PreviewSampleData.container)
+        .modelContainer(PreviewSampleData.shared.modelContainer)
 }

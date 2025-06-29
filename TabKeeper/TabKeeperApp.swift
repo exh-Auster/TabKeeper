@@ -15,7 +15,7 @@ struct TabKeeperApp: App {
             ContentView()
         }
         #if(DEBUG)
-        .modelContainer(PreviewSampleData.container)
+        .modelContainer(PreviewSampleData.shared.modelContainer)
         #else
         .modelContainer(for: [Customer.self, Purchase.self, Item.self, Product.self])
         #endif

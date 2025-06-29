@@ -34,8 +34,7 @@ struct CustomerRowView: View {
 }
 
 #Preview {
-    let context = PreviewSampleData.container.mainContext
-    let customer = try! context.fetch(FetchDescriptor<Customer>()).first!
+    let customer = Customer.sampleData[3] // TODO: fix
     
     NavigationStack {
         List {

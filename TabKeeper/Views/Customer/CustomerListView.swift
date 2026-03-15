@@ -118,3 +118,14 @@ struct CustomerListView: View {
         }
     }
 }
+
+#Preview("Filled") {
+    CustomerListView()
+        .modelContainer(PreviewSampleData.shared.modelContainer)
+}
+
+#Preview("Empty") {
+    CustomerListView()
+        .modelContainer(for: Customer.self, inMemory: true)
+}
+

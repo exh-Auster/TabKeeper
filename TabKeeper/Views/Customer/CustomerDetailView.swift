@@ -103,8 +103,35 @@ struct CustomerDetailView: View {
     }
 }
 
-#Preview {
-    let customer = Customer.sampleData[3] // TODO: fix
+#Preview("No history") {
+    let customer = PreviewSampleData.shared.customerWithEmptyHistory
+    
+    NavigationStack {
+        CustomerDetailView(customer: customer, path: .constant(NavigationPath()))
+            .modelContainer(PreviewSampleData.shared.modelContainer)
+    }
+}
+
+#Preview("Pending history") {
+    let customer = PreviewSampleData.shared.customerWithPendingHistory
+    
+    NavigationStack {
+        CustomerDetailView(customer: customer, path: .constant(NavigationPath()))
+            .modelContainer(PreviewSampleData.shared.modelContainer)
+    }
+}
+
+#Preview("Paid history") {
+    let customer = PreviewSampleData.shared.customerWithPaidHistory
+    
+    NavigationStack {
+        CustomerDetailView(customer: customer, path: .constant(NavigationPath()))
+            .modelContainer(PreviewSampleData.shared.modelContainer)
+    }
+}
+
+#Preview("Full history") {
+    let customer = PreviewSampleData.shared.customerWithFullHistory
     
     NavigationStack {
         CustomerDetailView(customer: customer, path: .constant(NavigationPath()))

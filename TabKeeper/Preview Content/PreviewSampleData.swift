@@ -18,8 +18,29 @@ class PreviewSampleData {
         modelContainer.mainContext
     }
     
-    var customer: Customer {
+    var customerWithEmptyHistory: Customer {
         Customer.sampleData.first!
+    }
+    
+    var customerWithPaidHistory: Customer {
+        Customer.sampleData.first {
+            let purchases = $0.purchases!
+            return !purchases.isEmpty && purchases.allSatisfy { $0.isPaid }
+        }!
+    }
+    
+    var customerWithPendingHistory: Customer {
+        Customer.sampleData.first {
+            let purchases = $0.purchases!
+            return !purchases.isEmpty && purchases.allSatisfy { !$0.isPaid }
+        }!
+    }
+    
+    var customerWithFullHistory: Customer {
+        Customer.sampleData.first {
+            let purchases = $0.purchases!
+            return purchases.contains { $0.isPaid } && purchases.contains { !$0.isPaid }
+        }!
     }
     
     var product: Product {

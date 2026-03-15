@@ -81,12 +81,20 @@ struct EditProductView: View {
 }
 
 #Preview {
-    @Previewable @State var path = NavigationPath()
+    let product = PreviewSampleData.shared.product
+    
+    EditProductView(existingProduct: product)
+}
+
+#Preview("In NavigationStack") {
+    let product = PreviewSampleData.shared.product
     
     NavigationStack {
-        NavigationLink("EditProductView Preview", value: Product(name: "EditProductView Preview", price: 10))
-            .navigationDestination(for: Product.self) { product in
-                EditProductView(existingProduct: product)
-            }
+        List {
+            Text("EditProductView preview")
+                .navigationDestination(isPresented: .constant(true)) {
+                    EditProductView(existingProduct: product)
+                }
+        }
     }
 }

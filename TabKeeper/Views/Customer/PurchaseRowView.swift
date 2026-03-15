@@ -33,3 +33,31 @@ struct PurchaseRowView: View {
         }
     }
 }
+
+#Preview("No customer name") {
+    let purchase = PreviewSampleData.shared.purchase
+    
+    PurchaseRowView(purchase: purchase)
+}
+
+#Preview("With customer name") {
+    let purchase = PreviewSampleData.shared.purchase
+    
+    PurchaseRowView(purchase: purchase, showCustomerName: true)
+}
+
+#Preview("In List, no customer name") {
+    let purchase = PreviewSampleData.shared.purchase
+    
+    List {
+        PurchaseRowView(purchase: purchase)
+    }
+}
+
+#Preview("In List, with customer name") {
+    let purchase = PreviewSampleData.shared.purchase
+    
+    List {
+        PurchaseRowView(purchase: purchase, showCustomerName: true)
+    }
+}

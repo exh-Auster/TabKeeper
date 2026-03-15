@@ -25,7 +25,7 @@ struct PurchaseDetailView: View {
             Section("Total") {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("\(purchase.items.count) produtos")
+                        Text("\(purchase.items?.count ?? 0) produtos")
                         Text("\(purchase.totalQuantity) itens")
                     }
                     
@@ -66,42 +66,47 @@ struct PurchaseDetailView: View {
                 }
             }
             
-            ForEach($purchase.items.reversed()) { $item in // FIXME: order after deletion
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(item.product.name)
-                            .bold()
-                        
-                        if !item.product.details.isEmpty {
-                            Text(item.product.details)
-                        }
+            if let items = purchase.items?.reversed() {
+                ForEach(items) { item in // FIXME: order after deletion
+                    @Bindable var item = item
+                    
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(item.product?.name ?? "")
+                                .bold()
                             
-                        if !purchase.isPaid {
-                            HStack {
-                                Stepper("\(item.quantity)", value: $item.quantity, in: 1...99)
-                                    .labelsHidden()
-                                    .sensoryFeedback(trigger: item.quantity) { oldValue, newValue in
-                                        return newValue > oldValue ? .increase : .decrease
-                                    }
-                                
-                                Text(item.quantity, format: .number)
+                            if let product = item.product, !product.details.isEmpty {
+                                Text(product.details)
+                            }
+                            
+                            if !purchase.isPaid {
+                                HStack {
+                                    Stepper("\(item.quantity)", value: $item.quantity, in: 1...99)
+                                        .labelsHidden()
+                                        .sensoryFeedback(trigger: item.quantity) { oldValue, newValue in
+                                            return newValue > oldValue ? .increase : .decrease
+                                        }
+                                    
+                                    Text(item.quantity, format: .number)
+                                }
                             }
                         }
-                    }
-                    
-                    Spacer()
-                    
-                    VStack(alignment: .trailing) {
-                        Text("\(item.quantity) × \(item.unitPrice, format: .currency(code: "BRL"))")
-                            .font(.caption)
                         
-                        Text(item.totalPrice, format: .currency(code: "BRL")) // TODO: locale
-                            .bold()
+                        Spacer()
+                        
+                        VStack(alignment: .trailing) {
+                            Text("\(item.quantity) × \(item.unitPrice, format: .currency(code: "BRL"))")
+                                .font(.caption)
+                            
+                            Text(item.totalPrice, format: .currency(code: "BRL")) // TODO: locale
+                                .bold()
+                        }
                     }
                 }
-            }
-            .onDelete { indexSet in
-                deleteItem(from: purchase.items.reversed(), at: indexSet)
+                .onDelete { indexSet in
+                    // TODO: refactor
+                    deleteItem(from: purchase.items?.reversed() ?? [], at: indexSet)
+                }
             }
         }
         .navigationTitle(Text(purchase.date, format: .dateTime.day().month().year()))
@@ -196,11 +201,11 @@ struct PurchaseDetailView: View {
 
         result.append("*DATA: \(purchase.date.formatted(date: .numeric, time: .omitted))*\n\n")
 
-        for item in purchase.items {
+        for item in purchase.items ?? [] {
             let unit = formatter.string(from: item.unitPrice as NSDecimalNumber) ?? "\(item.unitPrice)"
             let total = formatter.string(from: item.totalPrice as NSDecimalNumber) ?? "\(item.totalPrice)"
 
-            result.append("*\(item.product.name)* \(item.product.details)\n")
+            result.append("*\(item.product?.name ?? "Produto desconhecido")* \(item.product?.details ?? "")\n")
             result.append("\(unit) x \(item.quantity) = \(total)\n\n")
         }
 

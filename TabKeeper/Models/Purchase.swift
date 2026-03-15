@@ -10,26 +10,23 @@ import SwiftData
 
 @Model
 class Purchase {
-    var id: UUID
-    var date: Date
+    var date: Date = Date.now
     var customer: Customer?
     
     var comment: String = ""
     
-    var items: [Item] = []
+    var items: [Item]? = []
     
     var isPaid: Bool = false
     var datePaid: Date?
     
     init(
-        id: UUID = UUID(),
         date: Date = Date.now,
         customer: Customer,
         items: [Item] = [],
         isPaid: Bool = false,
         datePaid: Date? = nil
     ) {
-        self.id = id
         self.date = date
         self.customer = customer
         self.items = items
@@ -39,11 +36,11 @@ class Purchase {
 
 extension Purchase {
     var totalQuantity: Int {
-        items.reduce(0) { $0 + $1.quantity }
+        items?.reduce(0) { $0 + $1.quantity } ?? 0
     }
     
     var totalPrice: Decimal {
-        items.reduce(Decimal(0)) { $0 + $1.totalPrice }
+        items?.reduce(Decimal(0)) { $0 + $1.totalPrice } ?? 0
     }
 }
 

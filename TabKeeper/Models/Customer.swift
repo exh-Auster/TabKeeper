@@ -10,16 +10,14 @@ import SwiftData
 
 @Model
 class Customer {
-    var id: UUID
-    var phoneNumber: String
-    var name: String
+    var phoneNumber: String = ""
+    var name: String = ""
     
     var dateCreated = Date.now
     
-    var purchases: [Purchase] = []
+    var purchases: [Purchase]? = []
     
-    init(id: UUID = UUID(), phoneNumber: String, name: String) {
-        self.id = id
+    init(phoneNumber: String, name: String) {
         self.phoneNumber = phoneNumber
         self.name = name
     }
@@ -27,9 +25,10 @@ class Customer {
 
 extension Customer {
     var totalDebt: Decimal {
-        purchases
+        purchases?
             .filter { !$0.isPaid }
             .reduce(Decimal(0)) { $0 + $1.totalPrice }
+        ?? 0
     }
 }
 

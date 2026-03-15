@@ -9,14 +9,14 @@ import Foundation
 import SwiftData
 
 @Model
-class Product: Identifiable, Hashable {
-    var id: UUID
-    var name: String
-    var details: String
-    var price: Decimal
+class Product: Hashable {
+    var name: String = ""
+    var details: String = ""
+    var price: Decimal = 0
     
-    init(id: UUID = UUID(), name: String, details: String = "", price: Decimal) {
-        self.id = id
+    var item: [Item]? = []
+    
+    init(name: String, details: String = "", price: Decimal) {
         self.name = name
         self.details = details
         self.price = price

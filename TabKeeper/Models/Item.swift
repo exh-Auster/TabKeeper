@@ -10,15 +10,13 @@ import SwiftData
 
 @Model
 class Item {
-    var id: UUID
-    var product: Product
-    var unitPrice: Decimal
-    var quantity: Int
+    var product: Product?
+    var unitPrice: Decimal = 0
+    var quantity: Int = 1
     
     var purchase: Purchase?
     
-    init(id: UUID = UUID(), product: Product, unitPrice: Decimal? = nil, quantity: Int, purchase: Purchase? = nil) {
-        self.id = id
+    init(product: Product, unitPrice: Decimal? = nil, quantity: Int, purchase: Purchase? = nil) {
         self.product = product
         self.unitPrice = unitPrice ?? product.price
         self.quantity = quantity

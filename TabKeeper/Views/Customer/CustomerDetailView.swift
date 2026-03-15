@@ -15,15 +15,15 @@ struct CustomerDetailView: View {
     @Binding var path: NavigationPath
     
     private var hasPurchases: Bool {
-        !customer.purchases.isEmpty
+        !(customer.purchases?.isEmpty ?? true)
     }
     
     private var unpaidPurchases: [Purchase] {
-        customer.purchases.filter { !$0.isPaid }
+        customer.purchases?.filter { !$0.isPaid } ?? []
     }
     
     private var paidPurchases: [Purchase] {
-        customer.purchases.filter { $0.isPaid }
+        customer.purchases?.filter { $0.isPaid } ?? []
     }
     
     var body: some View {
@@ -74,7 +74,7 @@ struct CustomerDetailView: View {
                 }
             }
         }
-        .animation(.bouncy, value: customer.purchases.count)
+        .animation(.bouncy, value: customer.purchases?.count)
         .navigationTitle($customer.name)
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: Purchase.self, destination: { purchase in

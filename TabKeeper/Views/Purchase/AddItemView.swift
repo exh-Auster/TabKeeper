@@ -98,11 +98,11 @@ struct AddItemView: View {
         var result: [(product: Product, count: Int)] = []
         
         for product in allProducts {
-            let productId = product.id
+            let productId = product.persistentModelID
             
             let itemDescriptor = FetchDescriptor<Item>(
                 predicate: #Predicate<Item> { item in
-                    item.product.id == productId
+                    item.product?.persistentModelID == productId
                 }
             )
             
@@ -116,11 +116,11 @@ struct AddItemView: View {
     }
     
     private func addProduct(product: Product) {
-        if let existingItemIndex = purchase.items.firstIndex(where: { $0.product == product }) {
-            purchase.items[existingItemIndex].quantity += 1
+        if let items = purchase.items, let existingItemIndex = items.firstIndex(where: { $0.product == product }) {
+            items[existingItemIndex].quantity += 1
         } else {
             let newItem = Item(product: product, quantity: 1)
-            purchase.items.append(newItem)
+            purchase.items = (purchase.items ?? []) + [newItem]
         }
     }
 }

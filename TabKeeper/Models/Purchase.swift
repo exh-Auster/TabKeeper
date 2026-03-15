@@ -248,5 +248,11 @@ extension Purchase {
             ],
             isPaid: true
         ),
+        Purchase(
+            date: Date().addingTimeInterval(TimeInterval(-100 * 86400)),
+            customer: Customer.sampleData[0],
+            items: [],
+            isPaid: false
+        ),
     ]
 }

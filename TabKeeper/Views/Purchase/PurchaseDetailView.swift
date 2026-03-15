@@ -222,10 +222,44 @@ struct PurchaseDetailView: View {
     }
 }
 
-#Preview {
-    let purchase = Purchase.sampleData.first!
+#Preview("Empty") {
+    let emptyPurchase = PreviewSampleData.shared.emptyPurchase
+    
+    PurchaseDetailView(purchase: emptyPurchase, path: .constant(NavigationPath()))
+}
+
+#Preview("Unpaid") {
+    let unpaidPurchase = PreviewSampleData.shared.unpaidPurchase
+    
+    PurchaseDetailView(purchase: unpaidPurchase, path: .constant(NavigationPath()))
+}
+
+#Preview("Paid") {
+    let paidPurchase = PreviewSampleData.shared.paidPurchase
+    
+    PurchaseDetailView(purchase: paidPurchase, path: .constant(NavigationPath()))
+}
+
+#Preview("In NavigationStack, empty") {
+    let emptyPurchase = PreviewSampleData.shared.emptyPurchase
     
     NavigationStack {
-        PurchaseDetailView(purchase: purchase, path: .constant(NavigationPath()))
+        PurchaseDetailView(purchase: emptyPurchase, path: .constant(NavigationPath()))
+    }
+}
+
+#Preview("In NavigationStack, unpaid") {
+    let unpaidPurchase = PreviewSampleData.shared.unpaidPurchase
+    
+    NavigationStack {
+        PurchaseDetailView(purchase: unpaidPurchase, path: .constant(NavigationPath()))
+    }
+}
+
+#Preview("In NavigationStack, paid") {
+    let paidPurchase = PreviewSampleData.shared.paidPurchase
+    
+    NavigationStack {
+        PurchaseDetailView(purchase: paidPurchase, path: .constant(NavigationPath()))
     }
 }

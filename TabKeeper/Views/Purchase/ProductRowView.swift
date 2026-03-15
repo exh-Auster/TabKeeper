@@ -39,7 +39,13 @@ struct ProductRowView: View {
 #Preview {
     let product = Product.sampleData.first { !$0.details.isEmpty }!
     
+    ProductRowView(product: product)
+}
+
+#Preview("In List") {
+    let product = Product.sampleData.first { !$0.details.isEmpty }!
+    
     List {
-        ProductRowView(product: product)
+        ProductRowView(product: product, showEditIcon: true)
     }
 }

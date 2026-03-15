@@ -34,6 +34,10 @@ struct CustomerRowView: View {
 }
 
 #Preview {
+    CustomerRowView(customer: PreviewSampleData.shared.customerWithFullHistory, path: .constant(NavigationPath()))
+}
+
+#Preview("With List") {
     let customer = Customer.sampleData[3] // TODO: fix
     
     NavigationStack {

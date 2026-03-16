@@ -11,6 +11,8 @@ import SwiftUI
 struct ProductRowView: View {
     var product: Product
     
+    var showEditIcon = false
+    
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -26,6 +28,12 @@ struct ProductRowView: View {
             Spacer()
             
             Text(product.price, format: .currency(code: "BRL")) // TODO: locale
+            
+            if showEditIcon {
+                Button("Editar", systemImage: "pencil.circle") { }
+                    .labelStyle(.iconOnly)
+                    .tint(.accentColor)
+            }
         }
 //        .frame(minHeight: 44)
         .contextMenu {
@@ -36,13 +44,33 @@ struct ProductRowView: View {
     }
 }
 
-#Preview {
+#Preview("No edit icon") {
+    let product = Product.sampleData.first { !$0.details.isEmpty }!
+    
+    ProductRowView(product: product)
+}
+
+#Preview("With edit icon") {
+    let product = Product.sampleData.first { !$0.details.isEmpty }!
+    
+    ProductRowView(product: product, showEditIcon: true)
+}
+
+#Preview("In List, no edit icon") {
     let product = Product.sampleData.first { !$0.details.isEmpty }!
     
     ProductRowView(product: product)
 }
 
 #Preview("In List") {
+    let product = Product.sampleData.first { !$0.details.isEmpty }!
+    
+    List {
+        ProductRowView(product: product, showEditIcon: true)
+    }
+}
+
+#Preview("In List, with edit icon") {
     let product = Product.sampleData.first { !$0.details.isEmpty }!
     
     List {

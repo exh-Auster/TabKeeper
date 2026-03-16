@@ -11,13 +11,15 @@ import SwiftData
 @Model
 class Product: Hashable {
     var name: String = ""
+    var brand: String = ""
     var details: String = ""
     var price: Decimal = 0
     
     var item: [Item]? = []
     
-    init(name: String, details: String = "", price: Decimal) {
+    init(name: String, brand: String = "", details: String = "", price: Decimal = 0) {
         self.name = name
+        self.brand = brand
         self.details = details
         self.price = price
     }

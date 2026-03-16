@@ -24,9 +24,8 @@ struct ContentView: View {
             .disabled(true)
             
             Tab("Produtos", systemImage: "shippingbox.fill") {
-                Text("Placeholder")
+                InventoryView()
             }
-            .disabled(true)
             
             Tab("Estatísticas", systemImage: "chart.bar.fill") {
                 Text("Placeholder")

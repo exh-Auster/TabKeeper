@@ -43,7 +43,7 @@ struct EditProductView: View {
         .navigationTitle(existingProduct == nil ? "Novo Produto" : "Editar Produto")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancelar") { dismiss() }
+                Button("Cancelar", role: .cancel) { dismiss() }
             }
             
             ToolbarItem(placement: .confirmationAction) {

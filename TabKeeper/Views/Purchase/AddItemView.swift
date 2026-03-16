@@ -37,8 +37,9 @@ struct AddItemView: View {
                             addProduct(product: filteredProduct.product)
                             dismiss()
                         } label: {
-                            ProductRowView(product: filteredProduct.product)
+                            ProductRowView(product: filteredProduct.product, showEditIcon: true)
                         }
+                        .tint(.primary)
                     }
                 }
             } else if !isLoading && !allProducts.isEmpty {
@@ -53,7 +54,7 @@ struct AddItemView: View {
         }
         .searchable(text: $searchQuery, isPresented: $showingSearch, placement: .automatic)
         .toolbar {
-            ToolbarItemGroup {
+            ToolbarItemGroup(placement: .cancellationAction) {
                 Button("Cancelar", role: .cancel) {
                     dismiss()
                 }

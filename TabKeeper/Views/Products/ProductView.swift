@@ -42,11 +42,20 @@ struct ProductView: View {
                 }
                 .pickerStyle(.segmented)
                 
-                ForEach(purchases) { purchase in
-                    NavigationLink {
-                        PurchaseDetailView(purchase: purchase, path: .constant(NavigationPath()))
-                    } label: {
-                        PurchaseRowView(purchase: purchase, showCustomerName: true)
+                switch purchases.isEmpty {
+                case true:
+                    ContentUnavailableView {
+                        Label("Sem vendas", systemImage: "tray")
+                    } description: {
+                        Text("Vendas desse produto aparecerão aqui.")
+                    }
+                case false:
+                    ForEach(purchases) { purchase in
+                        NavigationLink {
+                            PurchaseDetailView(purchase: purchase, path: .constant(NavigationPath()))
+                        } label: {
+                            PurchaseRowView(purchase: purchase, showCustomerName: true)
+                        }
                     }
                 }
             }

@@ -25,6 +25,12 @@ struct ProductView: View {
         return sorted
     }
     
+    private var navigationSubtitleLabel: String {
+        [product.brand, product.details]
+            .filter { !$0.isEmpty }
+            .joined(separator: " | ")
+    }
+    
     var body: some View {
         List {
             Section("Últimas vendas") {
@@ -46,7 +52,7 @@ struct ProductView: View {
             }
         }
         .navigationTitle(product.name)
-        .navigationSubtitle(product.details)
+        .navigationSubtitle(navigationSubtitleLabel)
         .toolbarTitleDisplayMode(.inline)
     }
 }

@@ -16,8 +16,13 @@ struct ProductRowView: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
+                if !product.brand.isEmpty {
+                    Text(product.brand)
+                        .foregroundStyle(.secondary)
+                }
+                
                 Text(product.name)
-//                    .bold()
+                    .bold()
 
                 if !product.details.isEmpty {
                     Text(product.details)

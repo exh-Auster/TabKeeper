@@ -126,6 +126,11 @@ struct AddItemView: View {
 }
 
 #Preview {
+    AddItemView(purchase: Purchase(customer: Customer(phoneNumber: "", name: "AddItemView Preview")))
+        .modelContainer(PreviewSampleData.shared.modelContainer)
+}
+
+#Preview("In sheet") {
     Text("AddItemView Preview")
         .sheet(isPresented: .constant(true)) {
             NavigationStack {

@@ -83,7 +83,7 @@ struct EditCustomerView: View {
 }
 
 #Preview("Existing customer") {
-    let customer = Customer.sampleData.first!
+    let customer = PreviewSampleData.shared.customerWithFullHistory
     
     NavigationStack {
         EditCustomerView(existingCustomer: customer)

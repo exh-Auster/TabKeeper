@@ -33,3 +33,35 @@ struct PurchaseRowView: View {
         }
     }
 }
+
+#Preview("No customer name") {
+    let purchase = PreviewSampleData.shared.paidPurchase
+    
+    PurchaseRowView(purchase: purchase)
+}
+
+#Preview("With customer name") {
+    let purchase = PreviewSampleData.shared.paidPurchase
+    
+    PurchaseRowView(purchase: purchase, showCustomerName: true)
+}
+
+#Preview("In List, no customer name") {
+    let unpaidPurchase = PreviewSampleData.shared.unpaidPurchase
+    let paidPurchase = PreviewSampleData.shared.paidPurchase
+    
+    List {
+        PurchaseRowView(purchase: unpaidPurchase)
+        PurchaseRowView(purchase: paidPurchase)
+    }
+}
+
+#Preview("In List, with customer name") {
+    let unpaidPurchase = PreviewSampleData.shared.unpaidPurchase
+    let paidPurchase = PreviewSampleData.shared.paidPurchase
+    
+    List {
+        PurchaseRowView(purchase: unpaidPurchase, showCustomerName: true)
+        PurchaseRowView(purchase: paidPurchase, showCustomerName: true)
+    }
+}

@@ -14,6 +14,7 @@ struct EditProductView: View {
     private var existingProduct: Product?
 
     @State private var name: String
+    @State private var brand: String
     @State private var details: String
     @State private var price: Decimal
     
@@ -21,12 +22,14 @@ struct EditProductView: View {
         self.existingProduct = existingProduct
         
         self.name = ""
+        self.brand = ""
         self.details = ""
         self.price = Decimal(0)
     }
     
     init(name: String) {
         self.name = name
+        self.brand = ""
         self.details = ""
         self.price = Decimal(0)
     }
@@ -35,7 +38,9 @@ struct EditProductView: View {
         Form {
             TextField("Nome", text: $name)
                 .textInputAutocapitalization(.words)
-            TextField("Tipo", text: $details)
+            TextField("Marca (opcional)", text: $brand)
+                .textInputAutocapitalization(.words)
+            TextField("Tipo (opcional)", text: $details)
                 .textInputAutocapitalization(.words)
             TextField("Preço", value: $price, format: .currency(code: "BRL")) // TODO: locale
                 .keyboardType(.decimalPad)
@@ -43,7 +48,7 @@ struct EditProductView: View {
         .navigationTitle(existingProduct == nil ? "Novo Produto" : "Editar Produto")
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Cancelar") { dismiss() }
+                Button("Cancelar", role: .cancel) { dismiss() }
             }
             
             ToolbarItem(placement: .confirmationAction) {
@@ -63,6 +68,7 @@ struct EditProductView: View {
     func loadProduct() {
         if let product = existingProduct {
             name = product.name
+            brand = product.brand
             details = product.details
             price = product.price
         }
@@ -71,10 +77,11 @@ struct EditProductView: View {
     func saveProduct() {
         if let product = existingProduct {
             product.name = name
+            product.brand = brand
             product.details = details
             product.price = price
         } else {
-            let newProduct = Product(name: name, details: details, price: price)
+            let newProduct = Product(name: name, brand: brand, details: details, price: price)
             modelContext.insert(newProduct)
         }
     }

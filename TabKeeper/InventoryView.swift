@@ -11,11 +11,21 @@ import SwiftUI
 struct InventoryView: View {
     @Query var products: [Product]
     
+    @State private var searchQuery = ""
     @State private var isShowingEditSheet = false
+    
+    private var filteredProducts: [Product] {
+        guard !searchQuery.isEmpty else { return products }
+        
+        return products.filter { product in
+            [product.name, product.brand, product.details]
+                .contains { $0.localizedStandardContains(searchQuery) }
+        }
+    }
     
     var body: some View {
         NavigationStack {
-            List(products) { product in
+            List(filteredProducts) { product in
                 NavigationLink(value: product) {
                     ProductRowView(product: product)
                 }
@@ -24,6 +34,7 @@ struct InventoryView: View {
             .navigationDestination(for: Product.self) { product in
                 ProductView(product: product)
             }
+            .searchable(text: $searchQuery)
         }
     }
 }

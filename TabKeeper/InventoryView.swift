@@ -39,7 +39,11 @@ struct InventoryView: View {
     }
 }
 
-#Preview {
+#Preview("Filled") {
     InventoryView()
         .modelContainer(PreviewSampleData.shared.modelContainer)
+}
+
+#Preview("Empty") {
+    InventoryView()
 }

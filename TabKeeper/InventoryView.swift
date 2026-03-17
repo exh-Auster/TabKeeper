@@ -25,9 +25,23 @@ struct InventoryView: View {
     
     var body: some View {
         NavigationStack {
-            List(filteredProducts) { product in
-                NavigationLink(value: product) {
-                    ProductRowView(product: product)
+            List {
+                if products.isEmpty { // TODO: search
+                    ContentUnavailableView {
+                        Label("Sem produtos", systemImage: "tray")
+                    } description: {
+                        Text("Seus produtos aparecerão aqui.")
+                    }
+                } else {
+                    if !searchQuery.isEmpty && filteredProducts.isEmpty {
+                        ContentUnavailableView.search
+                    } else {
+                        ForEach(filteredProducts) { product in
+                            NavigationLink(value: product) {
+                                ProductRowView(product: product)
+                            }
+                        }
+                    }
                 }
             }
             .navigationTitle("Produtos")
